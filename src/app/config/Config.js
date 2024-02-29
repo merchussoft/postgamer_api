@@ -37,7 +37,7 @@ function validarTipoDato(valor) {
 function UrlHost(req) {
     const protocolo = req.protocol;
     const host = req.get('host');
-    return `${protocolo}://${host}/api/news`
+    return `${protocolo}://${host}/api/post`
 }
 
 

@@ -1,22 +1,24 @@
 const mysql = require('mysql');
 const { MysqlConfig } = require('./Config');
 
-const connection = mysql.createPool(MysqlConfig);
+const pool = mysql.createPool(MysqlConfig());
 
-connection.connect((error) => {
-    if(error) throw error;
-    // console.info('Conectado a la base de datos');
-})
+
+
+// Manejo de errores de conexión
+pool.on('error', (err) => {
+    console.error('Error en la conexión a la base de datos:', err);
+});
 
 const result_promise = (sql='', data=[]) => {
     return new Promise((resolve, reject) => {
-        connection.query(sql, data, (err, rows) => {
+        pool.query(sql, data, (err, rows) => {
             try {
                 let data_result = {code: 200, data: rows};
                 if(err) data_result = {code: 406, data: {}, 'message': err.sqlMessage, 'sql': err.sql};
                 resolve(data_result)
             } catch (err) {
-                console.log('mirando esto ==> ', err)
+                console.log('mirando est error ==> ', err)
                 reject(err);
             }
         })
@@ -29,7 +31,7 @@ const obtieneDatos = async (data = {}) =>{
     let campo = ('campo' in data) ? data.campo : 1;
     let valor = ('valor' in data) ? data.valor : 1;
 
-    let sql = `SELECT ${campos} FROM ${data.table} WHERE '${campo}'='${valor}' ${adicional}`;
+    let sql = `SELECT ${campos} FROM ${data.table} WHERE ${campo}='${valor}' ${adicional}`;
     console.log(sql);
     return await result_promise(sql);
 }
@@ -55,6 +57,7 @@ const insertTable = async (table = '', data = {}) => {
 
 module.exports = {
     obtieneDatos,
-    insertTable
+    insertTable,
+    result_promise
 }
 
