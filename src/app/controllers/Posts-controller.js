@@ -1,5 +1,5 @@
 const {listarPosts, insertAdjuntos, insertPost, obtenerImagen} = require('../models/Posts-model');
-const cfg = require('../config/config');
+const cfg = require('../config/Config');
 const {minioSave} = require('../helpers/updateS3Minio');
 const axios = require('axios');
 const {sendMessageTelegramApiPhoto, sendMessageTelegramApiText} = require('../helpers/telegramSendMessage-helper');
