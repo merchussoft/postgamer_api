@@ -1,8 +1,32 @@
 const express = require('express');
 const app = express();
+const mg = require('morgan');
+const cors = require('cors');
+const {createPathEnv, nodeEnv, getNumberEnv} = require('./app/config/Config');
 
 
-app.set('port', 3017);
+/**
+ * aqui se estableceran los settings que tenga la api
+ */
+require('dotenv').config({
+    path: createPathEnv(nodeEnv())
+})
+app.set('port', getNumberEnv('PORT_APP'));
+
+
+/**
+ * middleware instance
+ */
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+app.use(mg(':method :url :status :res[content-length] - :response-time ms'));
+app.use(cors());
+
+
+/**
+ * aqui se van importar todas las rutas
+ */
+app.use('/api/post', require('./app/routers/post-route'));
 
 
 module.exports = app;
