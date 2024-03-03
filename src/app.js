@@ -11,6 +11,9 @@ const {createPathEnv, nodeEnv, getNumberEnv} = require('./app/config/Config');
 require('dotenv').config({
     path: createPathEnv(nodeEnv())
 })
+
+require('./app/config/telegram-bot-config');
+
 app.set('port', getNumberEnv('PORT_APP'));
 
 

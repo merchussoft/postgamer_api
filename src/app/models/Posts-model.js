@@ -13,7 +13,7 @@ exports.listarPosts = async (cod_post = 0) => {
     sql += select_adicional
     sql += ' FROM news ne '
     sql += ' LEFT JOIN adjuntos ad ON ad.relacion = ne.cod_news '
-    sql += ` WHERE 1=1 ${where_adicional} order by created_at desc  `
+    sql += ` WHERE 1=1 ${where_adicional} order by cod_news desc  `
     return await result_promise(sql);
 }
 
