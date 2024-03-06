@@ -1,12 +1,17 @@
 const TelegramBot = require('node-telegram-bot-api');
 const {getEnvironment} = require('./Config');
 const fs = require('fs');
+const path = require('path');
 
 
 const bot_telegram = new TelegramBot(getEnvironment('BOT_TOKEN_TELEGRAM'), {polling: true});
 
 let filename = getEnvironment('FILENAME_JSON_USERID');
+filename = path.join(__dirname, '../../..',filename);
 bot_telegram.on('message', (msg) => {
+
+
+    console.log(msg);
 
     const args = msg.text.slice(1).split(' ');
     const command = args.shift().toLowerCase();
@@ -16,12 +21,14 @@ bot_telegram.on('message', (msg) => {
         case 'start':
             if(!usuarioRegistrado(userId)){
                 crearUsuarios(userId);
-                bot_telegram.sendMessage(userId, `Recibí: hola`);
+                bot_telegram.sendMessage(userId, `@${msg.chat.first_name}  te has registado satisfactoriamente`);
                 return false;
+            } else {
+                bot_telegram.sendMessage(userId, `El usuario @${msg.chat.first_name} ya esta registrado`);
             }
             break;
         case 'echo' || ' ' || '':
-            bot_telegram.sendMessage(userId, `@${msg.chat.username}, Comando no permitido: "${command.trim()}" -- Los comando validos son los siguientes [/start]`);
+            bot_telegram.sendMessage(userId, `@${msg.chat.first_name} ${msg.chat.last_name}, Comando no permitido: "${command.trim()}" -- Los comando validos son los siguientes [/start]`);
             break;
     }
 
