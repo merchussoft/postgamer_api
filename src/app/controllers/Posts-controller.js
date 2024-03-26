@@ -3,6 +3,7 @@ const cfg = require('../config/Config');
 const {minioSave} = require('../helpers/updateS3Minio');
 const axios = require('axios');
 const {sendMessageTelegramApiPhoto, sendMessageTelegramApiText} = require('../helpers/telegramSendMessage-helper');
+const {discordPost} = require('../helpers/Discord-post-helper');
 
 
 exports.listarPost = async (req, res) => {
@@ -25,14 +26,18 @@ exports.insertNews = async (req, res) => {
             data_insert.relacion = data;
             data_insert.ubicacion_https = `${cfg.UrlHost(req)}/obtener_imagen/${data}`;
             await insertAdjuntos(data_insert)
-            sendMessageTelegramApiPhoto({
+
+            let data_send = {
                 title: body_data.title,
                 url_image: data_insert.ubicacion_https,
                 leermas: process.env.URL_LEERMAS + `/${data}`
-            });
+            }
+
+            await discordPost(data_send);
+            await sendMessageTelegramApiPhoto(data_send);
             res.status(data_minio.code).json({message: 'data guardada existosamente'});
         } else {
-            sendMessageTelegramApiText({
+            await sendMessageTelegramApiText({
                 title: body_data.title,
                 leermas: process.env.URL_LEERMAS + `/${data}`
             });
@@ -51,15 +56,11 @@ exports.detailPost = async (req, res) => {
 exports.obtenerImagen = async (req, res) => {
     try {
         const result = await obtenerImagen(Number(req.params.cod))
-        console.log(result)
         if (result.data.length) {
             const image = result.data[0];
             const response = await axios.get(image.ubicacion, {responseType: 'stream'});
 
-            res.writeHead(200, {
-                'Content-Type': image.extencion,
-                'Content-Length': response.headers['content-length']
-            });
+            res.writeHead(200, { 'Content-Type': image.extencion, 'Content-Length': response.headers['content-length'] });
             response.data.pipe(res);
         } else {
             res.status(404).send('Imagen no encontrada.');

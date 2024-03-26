@@ -30,6 +30,7 @@ app.use(cors());
  * aqui se van importar todas las rutas
  */
 app.use('/api/post', require('./app/routers/post-route'));
+app.use('/api/categories', require('./app/routers/Categories-route'));
 
 
 module.exports = app;
