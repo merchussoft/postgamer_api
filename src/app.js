@@ -12,7 +12,6 @@ require('dotenv').config({
     path: createPathEnv(nodeEnv())
 })
 
-require('./app/config/telegram-bot-config');
 
 app.set('port', getNumberEnv('PORT_APP'));
 

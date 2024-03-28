@@ -12,10 +12,10 @@ pool.on('error', (err) => {
 
 const result_promise = (sql='', data=[]) => {
     return new Promise((resolve, reject) => {
-        pool.query(sql, data, (err, rows) => {
+        pool.query(sql, data, (error, rows) => {
             try {
                 let data_result = {code: 200, data: rows};
-                if(err) data_result = {code: 406, data: {}, 'message': err.sqlMessage, 'sql': err.sql};
+                if(error) data_result = {code: 406, data: {}, 'message': error.sqlMessage, 'sql': error.sql};
                 resolve(data_result)
             } catch (err) {
                 console.log('mirando est error ==> ', err)
@@ -32,7 +32,6 @@ const obtieneDatos = async (data = {}) =>{
     let valor = ('valor' in data) ? data.valor : 1;
 
     let sql = `SELECT ${campos} FROM ${data.table} WHERE ${campo}='${valor}' ${adicional}`;
-    console.log(sql);
     return await result_promise(sql);
 }
 
