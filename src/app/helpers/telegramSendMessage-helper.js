@@ -19,7 +19,6 @@ const sendMessageTelegramApiText = async (data = {}) => {
     });
 }
 
-
 module.exports = {
     sendMessageTelegramApiPhoto,
     sendMessageTelegramApiText

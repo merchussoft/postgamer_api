@@ -16,6 +16,7 @@ exports.insertNews = async (req, res) => {
         title: req.body.title,
         description: req.body.description,
         content: req.body.content,
+        cod_categoria: req.body.cod_categoria,
     }
 
     const {data, code} = await insertPost(body_data);
@@ -37,10 +38,7 @@ exports.insertNews = async (req, res) => {
             await sendMessageTelegramApiPhoto(data_send);
             res.status(data_minio.code).json({message: 'data guardada existosamente'});
         } else {
-            await sendMessageTelegramApiText({
-                title: body_data.title,
-                leermas: process.env.URL_LEERMAS + `/${data}`
-            });
+            await sendMessageTelegramApiText({title: body_data.title, leermas: process.env.URL_LEERMAS + `/${data}`});
             res.status(code).json({message: 'data guardada existosamente sin una imagen'});
         }
     } else {
@@ -59,12 +57,9 @@ exports.obtenerImagen = async (req, res) => {
         if (result.data.length) {
             const image = result.data[0];
             const response = await axios.get(image.ubicacion, {responseType: 'stream'});
-
             res.writeHead(200, { 'Content-Type': image.extencion, 'Content-Length': response.headers['content-length'] });
             response.data.pipe(res);
-        } else {
-            res.status(404).send('Imagen no encontrada.');
-        }
+        } else res.status(404).send('Imagen no encontrada.');
     } catch (error) {
         console.error('Error al obtener la imagen:', error.message);
         res.status(500).send('Error al obtener la imagen');

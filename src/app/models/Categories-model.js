@@ -7,6 +7,6 @@ exports.listarCategories = async () => {
         'campo': 'estado',
         'valor': 1,
         'lista_campos': ['cod_categoria', 'categoria'],
-        'str_adicional': 'ORDER BY cod_categoria desc'
+        'str_adicional': 'AND estado = 1 ORDER BY cod_categoria desc'
     })
 }
