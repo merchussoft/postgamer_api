@@ -25,7 +25,7 @@ exports.insertNews = async (req, res) => {
         if (data_minio.code === 200) {
             const data_insert = data_minio.data;
             data_insert.relacion = data;
-            data_insert.ubicacion_https = `${cfg.UrlHost(req)}/obtener_imagen/${data}`;
+            data_insert.ubicacion_https = `${cfg.UrlHost(req)}/uploads/${data}/${data_minio.data.nombre}`;
             await insertAdjuntos(data_insert)
 
             let data_send = {
@@ -53,7 +53,7 @@ exports.detailPost = async (req, res) => {
 
 exports.obtenerImagen = async (req, res) => {
     try {
-        const result = await obtenerImagen(Number(req.params.cod))
+        const result = await obtenerImagen(req.params)
         if (result.data.length) {
             const image = result.data[0];
             const response = await axios.get(image.ubicacion, {responseType: 'stream'});

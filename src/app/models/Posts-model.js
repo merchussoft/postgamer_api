@@ -26,10 +26,11 @@ exports.insertAdjuntos = async (data = {})  => {
     return await insertTable('adjuntos', data);
 }
 
-exports.obtenerImagen = async (cod_adjunto) =>{
+exports.obtenerImagen = async (data = {}) =>{
     return await obtieneDatos({
         "table": `adjuntos`,
         "campo": 'relacion',
-        "valor": cod_adjunto
+        "valor": Number(data.cod),
+        "str_adicional": `AND nombre="${data.filename}"`
     })
 }
